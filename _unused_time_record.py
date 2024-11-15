@@ -1,24 +1,18 @@
 import os
 import torch
 
-tensor1 = torch.zeros([10000000])
-tensor2 = torch.zeros([10000000])
+tensor = torch.zeros([1, 16, 18, 64])
 
-start = torch.cuda.Event(enable_timing=True)
-end = torch.cuda.Event(enable_timing=True)
 
-start.record()
-tensor1 = tensor1.cuda()
+for _ in range(20):
+    start = torch.cuda.Event(enable_timing=True)
+    end = torch.cuda.Event(enable_timing=True)
+    tensor = tensor.cpu()
 
-end.record()
-torch.cuda.synchronize()
-print(start.elapsed_time(end))
+    start.record()
+    tensor = tensor.cuda()
+    end.record()
 
-start = torch.cuda.Event(enable_timing=True)
-end = torch.cuda.Event(enable_timing=True)
-start.record()
-tensor2 = tensor2.cuda()
+    torch.cuda.synchronize()
 
-end.record()
-torch.cuda.synchronize()
-print(start.elapsed_time(end))
+    print(start.elapsed_time(end))

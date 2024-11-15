@@ -150,7 +150,22 @@ class OPTAttention(nn.Module):
         is_cross_attention = key_value_states is not None
 
         bsz, tgt_len, _ = hidden_states.size()
+        ## ---------- get kv cache from cpu ---------------
+        if past_key_value is not None:
+            __up_key_cache = past_key_value[0].clone().detach().cpu()
+            __up_value_cahe = past_key_value[1].clone().detach().cpu()
+            start = torch.cuda.Event(enable_timing=True)
+            end = torch.cuda.Event(enable_timing=True)
+            start.record()
+            __up_key_cache =  __up_key_cache.cuda()
+            __up_value_cahe = __up_value_cahe.cuda()
+            end.record()
+            torch.cuda.synchronize()
+            with open("_upload.txt", "a") as f:
+                # print(start.elapsed_time(end), __up_key_cache.shape, end=" ")
+                print(start.elapsed_time(end), file=f, end="\n")
 
+        # -------------------------------------------------
 
         # get query proj
         query_states = self.q_proj(hidden_states) * self.scaling
@@ -168,7 +183,18 @@ class OPTAttention(nn.Module):
             key_states = self._shape(self.k_proj(hidden_states), -1, bsz)
             value_states = self._shape(self.v_proj(hidden_states), -1, bsz)
 
-
+            ## ---------------  add kv cache to cpu ---------------------------------
+            start = torch.cuda.Event(enable_timing=True)
+            end = torch.cuda.Event(enable_timing=True)
+            start.record()
+            __off_key_cache = key_states.cpu()
+            __off_value_cache = value_states.cpu()
+            end.record()
+            torch.cuda.synchronize()
+            with open("_offload.txt", "a") as f:
+                # print(start.elapsed_time(end), key_states.shape)
+                print(start.elapsed_time(end), file=f, end="\n")
+            # -------------------------------------------------------------------------
 
             key_states = torch.cat([past_key_value[0], key_states], dim=2)
             value_states = torch.cat([past_key_value[1], value_states], dim=2)

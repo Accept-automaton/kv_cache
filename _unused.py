@@ -22,21 +22,5 @@
 # print("Finish")
 
 
-## ---------- get kv cache from cpu ---------------
-__key_cache = past_key_value[0].cpu()
-__value_cahe = past_key_value[1].cpu()
-start.record()
 
-# -------------------------------------------------
 
-## ---------------  add kv cache to cpu ---------------------------------
-start = torch.cuda.Event(enable_timing=True)
-end = torch.cuda.Event(enable_timing=True)
-start.record()
-__key_cache = key_states.cpu()
-__value_cache = value_states.cpu()
-end.record()
-torch.cuda.synchronize()
-with open("_offload.txt", "a") as f:
-    print(start.elapsed_time(end), file=f)
-# -------------------------------------------------------------------------
