@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="2a97851f-5492-4fe7-94bb-717c5462ec23" name="pairshoe1">
+        <fileTransfer rootFolder="/home/pairshoe" accessType="SFTP" host="yutong.time-crystal.org" port="9203" sshConfigId="c7d37d10-ee10-46a6-ab19-65244ab911ed" sshConfig="pairshoe@yutong.time-crystal.org:9203 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
